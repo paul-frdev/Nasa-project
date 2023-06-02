@@ -35,6 +35,15 @@ async function httpSubmitLaunch(launch) {
 
 async function httpAbortLaunch(id) {
   // TODO: Once API is ready.
+  try {
+    return fetch(`${API_URL}/launches/${id}`, {
+      method: "DELETE",
+    });
+  } catch (error) {
+    return {
+      ok: false,
+    };
+  }
   // Delete launch with given ID.
 }
 
