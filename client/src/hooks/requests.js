@@ -17,6 +17,19 @@ async function httpGetLaunches() {
 
 async function httpSubmitLaunch(launch) {
   // TODO: Once API is ready.
+  try {
+    return await fetch(`${API_URL}/launches`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "Application/json",
+      },
+      body: JSON.stringify(launch),
+    });
+  } catch (error) {
+    return {
+      ok: false,
+    };
+  }
   // Submit given launch data to launch system.
 }
 
