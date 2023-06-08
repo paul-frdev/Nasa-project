@@ -11,7 +11,8 @@
     "watch": "npm run server & npm run client",
     "deploy": "npm run build --prefix client && npm start --prefix server",
     "deploy-cluster": "npm run build --prefix client && npm run cluster --prefix server",
-    "test": "npm text --prefix server && npm text --prefix client"
+    "test": "npm test --prefix server && npm test --prefix client",
+    "test-server": "npm test --prefix server"
   },
   "keywords": [],
   "author": "",

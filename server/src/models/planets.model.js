@@ -4,7 +4,7 @@ const path = require("node:path");
 
 const planets = require("./planets.mongo");
 
-const results = [];
+// const results = [];
 
 function isHabitable(planet) {
   return (
@@ -30,10 +30,8 @@ function loadPlanetsData() {
       .on("data", async (data) => {
         if (isHabitable(data)) {
           // return results.push(data);
-          // insert + update = mongoose it prevents a lot of calls and dublicates of saving data to database = upsert 
-          // await planets.create({
-          //   keplerName: data.kepler_name,
-          // });
+          // insert + update = mongoose it prevents a lot of calls and dublicates of saving data to database = upsert
+          savePlanet(data);
         }
       })
       .on("error", (error) => {
@@ -47,8 +45,26 @@ function loadPlanetsData() {
   });
 }
 
-function getAllPlanets() {
-  return results;
+async function getAllPlanets() {
+  return await planets.find({});
+}
+
+async function savePlanet(planet) {
+  try {
+    return await planets.updateOne(
+      {
+        keplerName: planet.kepler_name,
+      },
+      {
+        keplerName: planet.kepler_name,
+      },
+      {
+        upsert: true,
+      }
+    );
+  } catch (error) {
+    console.error(`Could not save error ${error}`);
+  }
 }
 
 // parse()
