@@ -2,6 +2,8 @@ const { parse } = require("csv-parse");
 const fs = require("node:fs");
 const path = require("node:path");
 
+const planets = require("./planets.mongo");
+
 const results = [];
 
 function isHabitable(planet) {
@@ -25,9 +27,13 @@ function loadPlanetsData() {
       path.join(__dirname, "..", "..", "data", "kepler_data.csv")
     )
       .pipe(parse({ comment: "#", columns: true }))
-      .on("data", (data) => {
+      .on("data", async (data) => {
         if (isHabitable(data)) {
-          return results.push(data);
+          // return results.push(data);
+          // insert + update = mongoose it prevents a lot of calls and dublicates of saving data to database = upsert 
+          // await planets.create({
+          //   keplerName: data.kepler_name,
+          // });
         }
       })
       .on("error", (error) => {
