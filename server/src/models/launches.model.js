@@ -1,8 +1,11 @@
-// const launches = require("./launches.mongo");
+const launchesDatabase = require("./launches.mongo");
+const planets = require("./planets.mongo");
 
-const launches = new Map();
+// const launches = new Map();
 
-let latestFlightNumber = 100;
+// let latestFlightNumber = 100;
+
+const defaultFlightNumber = 0;
 
 const launch = {
   flightNumber: 100,
@@ -15,26 +18,77 @@ const launch = {
   success: true,
 };
 
+saveAllLaunch(launch);
+
 function existLaunchWithId(launchId) {
   return launches.has(launchId);
 }
 
-function addNewLaunch(launch) {
-  latestFlightNumber++;
-  launches.set(
-    latestFlightNumber,
-    Object.assign(launch, {
-      success: true,
-      upcoming: true,
-      customer: ["ZTM", "NASA"],
-      flightNumber: latestFlightNumber,
-    })
+async function getLatestLaunch() {
+  const latestLaunch = await launchesDatabase.findOne().sort("-flightNumber");
+
+  if (!latestLaunch) {
+    return defaultFlightNumber;
+  }
+
+  return latestLaunch.flightNumber;
+}
+
+async function scheduleNewLaunch(launch) {
+  const newFlightNumber = (await getLatestLaunch()) + 1;
+  const newLaunch = Object.assign(launch, {
+    success: true,
+    upcoming: true,
+    customer: ["ZTM", "NASA"],
+    flightNumber: newFlightNumber,
+  });
+
+  await saveAllLaunch(newLaunch);
+}
+
+// function addNewLaunch(launch) {
+//   latestFlightNumber++;
+//   launches.set(
+//     latestFlightNumber,
+//     Object.assign(launch, {
+//       success: true,
+//       upcoming: true,
+//       customer: ["ZTM", "NASA"],
+//       flightNumber: latestFlightNumber,
+//     })
+//   );
+// }
+
+// launches.set(launch.flightNumber, launch);
+async function getAllLaunches() {
+  // return Array.from(launches.values());
+  return await launchesDatabase.find(
+    {},
+    {
+      __v: 0,
+      _id: 0,
+    }
   );
 }
 
-launches.set(launch.flightNumber, launch);
-function getAllLaunches() {
-  return Array.from(launches.values());
+async function saveAllLaunch(launch) {
+  const planet = await planets.findOne({
+    keplerName: launch.target,
+  });
+
+  if (!planet) {
+    throw new Error("No matching planets was found");
+  }
+
+  await launchesDatabase.updateOne(
+    {
+      flightNumber: launch.flightNumber,
+    },
+    launch,
+    {
+      upsert: true,
+    }
+  );
 }
 
 function deleteLaunchById(launchId) {
@@ -48,7 +102,7 @@ function deleteLaunchById(launchId) {
 
 module.exports = {
   existLaunchWithId,
-  addNewLaunch,
+  scheduleNewLaunch,
   getAllLaunches,
   deleteLaunchById,
 };
