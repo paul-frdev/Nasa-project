@@ -7,21 +7,23 @@ const planets = require("./planets.mongo");
 
 const defaultFlightNumber = 0;
 
-const launch = {
-  flightNumber: 100,
-  mission: "Kepler exploration X",
-  rocket: "Explorer IS1",
-  launchDate: new Date("December 27, 2030"),
-  target: "Kepler-442 b",
-  customer: ["ZTM", "Nasa"],
-  upcoming: true,
-  success: true,
-};
+// const launch = {
+//   flightNumber: 100,
+//   mission: "Kepler exploration X",
+//   rocket: "Explorer IS1",
+//   launchDate: new Date("December 27, 2030"),
+//   target: "Kepler-442 b",
+//   customer: ["ZTM", "Nasa"],
+//   upcoming: true,
+//   success: true,
+// };
 
-saveAllLaunch(launch);
+// saveAllLaunch(launch);
 
-function existLaunchWithId(launchId) {
-  return launches.has(launchId);
+async function existLaunchWithId(launchId) {
+  return await launchesDatabase.findOne({
+    flightNumber: launchId,
+  });
 }
 
 async function getLatestLaunch() {
@@ -80,7 +82,7 @@ async function saveAllLaunch(launch) {
     throw new Error("No matching planets was found");
   }
 
-  await launchesDatabase.updateOne(
+  await launchesDatabase.findOneAndUpdate(
     {
       flightNumber: launch.flightNumber,
     },
@@ -91,13 +93,21 @@ async function saveAllLaunch(launch) {
   );
 }
 
-function deleteLaunchById(launchId) {
-  const aborted = launches.get(launchId);
+async function deleteLaunchById(launchId) {
+  return await launchesDatabase.findOneAndUpdate(
+    {
+      flightNumber: launchId,
+    },
+    {
+      upcoming: false,
+      success: false,
+    }
+  );
 
-  aborted.upcoming = false;
-  aborted.success = false;
+  // aborted.upcoming = false;
+  // aborted.success = false;
 
-  return aborted;
+  // return aborted;
 }
 
 module.exports = {

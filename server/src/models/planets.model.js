@@ -31,7 +31,7 @@ function loadPlanetsData() {
         if (isHabitable(data)) {
           // return results.push(data);
           // insert + update = mongoose it prevents a lot of calls and dublicates of saving data to database = upsert
-          savePlanet(data);
+          await savePlanet(data);
         }
       })
       .on("error", (error) => {
