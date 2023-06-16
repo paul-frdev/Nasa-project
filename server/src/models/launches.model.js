@@ -75,7 +75,7 @@ async function scheduleNewLaunch(launch) {
 // }
 
 // launches.set(launch.flightNumber, launch);
-async function getAllLaunches() {
+async function getAllLaunches(skip, limit) {
   // return Array.from(launches.values());
   return await launchesDatabase
     .find(
@@ -85,8 +85,8 @@ async function getAllLaunches() {
         _id: 0,
       }
     )
-    .skip(20)
-    .limit(50);
+    .skip(skip)
+    .limit(limit);
 }
 
 async function saveAllLaunch(launch) {
