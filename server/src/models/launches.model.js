@@ -8,18 +8,18 @@ const axios = require("axios");
 
 const defaultFlightNumber = 0;
 
-const launch = {
-  flightNumber: 100, // flight_number
-  mission: "Kepler exploration X", // name
-  rocket: "Explorer IS1", // rocket.name
-  launchDate: new Date("December 27, 2030"), // date_local
-  target: "Kepler-442 b", // not applicable yet
-  customer: ["ZTM", "Nasa"], //payload.customers
-  upcoming: true, // upcoming
-  success: true, // success
-};
+// const launch = {
+//   flightNumber: 100, // flight_number
+//   mission: "Kepler exploration X", // name
+//   rocket: "Explorer IS1", // rocket.name
+//   launchDate: new Date("December 27, 2030"), // date_local
+//   target: "Kepler-442 b", // not applicable yet
+//   customer: ["ZTM", "Nasa"], //payload.customers
+//   upcoming: true, // upcoming
+//   success: true, // success
+// };
 
-saveAllLaunch(launch);
+// saveAllLaunch(launch);
 
 async function findLaunch(filter) {
   return launchesDatabase.findOne(filter);
@@ -85,6 +85,7 @@ async function getAllLaunches(skip, limit) {
         _id: 0,
       }
     )
+    .sort({ flightNumber: -1 })
     .skip(skip)
     .limit(limit);
 }

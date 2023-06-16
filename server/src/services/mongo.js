@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
-const MONGO_URL =
-  "mongodb+srv://paulnetua:wQt26JBVJzxQhRdW@cluster0.f0hd7lr.mongodb.net/nasa?retryWrites=true&w=majority";
+const MONGO_URL = process.env.MONGO_URL;
 
 mongoose.connection.once("open", () => {
   console.log("MongoDB connection is ready");
@@ -18,3 +17,4 @@ async function mongoConnection() {
 module.exports = {
   mongoConnection,
 };
+
