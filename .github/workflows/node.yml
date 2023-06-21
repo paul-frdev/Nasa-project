@@ -8,9 +8,11 @@ jobs:
   build:
     env:
       CI: true
+      MONGO_URL: mongodb//:localhost/nasa
     strategy:
       matrix:
         node-version: [16.x, 18.x]
+        mongodb_version: ['5.6']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,5 +20,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Use MongoDB From GitHub Actions
+        uses: SusanDoggie/mongodb-action@0.0.1
+        with: 
+          mongodb-version: ${{ matrix.mongodb-version }}
       - run: npm install
       - run: npm run build --prefix client
